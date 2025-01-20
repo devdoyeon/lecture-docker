@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  odoo:
+    image: odoo:latest
+    depends_on:
+      - database
+    ports:
+      - "8069:8069"
+    environment:
+      - HOST=database
+      - USER=odoo
+      - PASSWORD=dkagh1.
+    volumes:
+      - odoo-web-data:/var/lib/odoo
+      - ./config:/etc/odoo
+      - ./addons:/mnt/extra-addons
+    
+  database:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=dkagh1.
+      - POSTGRES_USER=odoo
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    
+volumes:
+  odoo-web-data:
+  db-data:
+

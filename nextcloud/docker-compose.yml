@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  # PostgreSQL 서비스
+  db:
+    image: postgres:latest
+    container_name: nextcloud_db
+    environment:
+      - POSTGRES_DB=nextcloud
+      - POSTGRES_USER=nextclouduser
+      - POSTGRES_PASSWORD=nextcloudpassword
+    volumes:
+      - nextcloud_db_data:/var/lib/postgresql/data
+    networks:
+      - nextcloud_network
+
+  # Nextcloud 서비스
+  nextcloud:
+    image: nextcloud:latest
+    container_name: nextcloud
+    environment:
+      - MYSQL_PASSWORD=nextcloudpassword
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextclouduser
+      - NEXTCLOUD_ADMIN_USER=admin
+      - NEXTCLOUD_ADMIN_PASSWORD=adminpassword
+      - POSTGRES_HOST=db
+    ports:
+      - "8090:80"
+    volumes:
+      - /mnt/data/nextcloud:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - nextcloud_network
+
+volumes:
+  nextcloud_db_data:
+  nextcloud_data:
+
+networks:
+  nextcloud_network:
+    driver: bridge
